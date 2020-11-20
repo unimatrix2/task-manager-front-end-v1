@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
  
-import AddProject from './AddProject'; // <== !!!
+import AddProject from './AddProject';
+
+import apiServices from '../../services/api.service';
  
 class ProjectList extends Component {
   state = {
     listOfProjects: [],
   }
  
-  getAllProjects = () =>{
-    axios.get(`${process.env.REACT_APP_API_BASE_URL}/projects/private/list`)
-    .then(responseFromApi => {
-      this.setState({
-        listOfProjects: responseFromApi.data
-      })
-    })
+  getAllProjects = async () =>{
+    try {
+      const projects = await apiServices.getAllProjects();
+      
+      this.setState({ listOfProjects: projects });
+    } catch (error) {
+      console.log(error);
+    }
   }
  
   componentDidMount() {
-    console.log('COMPONENTE MONTOU!!!!!!!')
     this.getAllProjects();
   }
  

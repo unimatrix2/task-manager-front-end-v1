@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
- 
- 
+
+import apiServices from '../../services/api.service';
 class TaskDetails extends Component {
   state = {}
  
@@ -10,20 +9,19 @@ class TaskDetails extends Component {
     this.getTheTask();
   }
  
-  getTheTask = () => {
-    const { params } = this.props.match;
-    axios.get(`${process.env.REACT_APP_API_BASE_URL}/tasks/private/list/${params.taskId}`)
-    .then( responseFromApi =>{
-      const theTask = responseFromApi.data;
+  getTheTask = async () => {
+    try {
+      const { params } = this.props.match;
+
+      const theTask = await apiServices.getOneTaskById(params.taskId);
+
       this.setState(theTask);
-    })
-    .catch((err)=>{
-        console.log(err)
-    })
+    } catch (error) {
+      console.log(error);
+    }
   }
  
   render(){
-    console.log(this.state)
     return(
       <div>
         <h1>{this.state.title}</h1>
