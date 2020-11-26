@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+
+import apiServices from '../../services/api.service';
  
 class AddProject extends Component {
   state = {
@@ -12,13 +13,11 @@ class AddProject extends Component {
       event.preventDefault();
 
       const { title, description } = this.state;
-      // const title = this.state.title;
-      // const description = this.state.description;
-      console.log({ title, description })
 
-      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/projects/private/create`, { title, description });
+      await apiServices.createProject({ title, description });
 
       this.props.getData();
+      
       this.setState({ title: "", description: "" });
     } catch (error) {
       console.log(error);

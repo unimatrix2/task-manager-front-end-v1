@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
  
-const navbar = ({ isUserAuth }) => {
+const navbar = ({ isUserAuth, logoutUser }) => {
   return (
     <nav className="nav-style">
       <ul>
         {isUserAuth ? (
           <>
             <li><Link to="/projects" style={{ textDecoration: 'none' }}>Projects</Link></li>
-            <li><Link to="/" style={{ textDecoration: 'none' }}>Logout</Link></li>
+            <li><Link to="/" onClick={logoutUser} style={{ textDecoration: 'none' }}>Logout</Link></li>
           </>
         ) : (
           <>

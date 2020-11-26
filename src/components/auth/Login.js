@@ -5,6 +5,8 @@ import * as yup from 'yup';
 import { Formik } from 'formik';
 import { Form, Col, Button } from 'react-bootstrap';
 
+import localStorageUtils from '../../utils/localStorage.utils';
+
 const schema = yup.object({
   email: yup.string()
     .email('Formato Inválido').min(5, 'Mínimo de 5 caracteres').max(100, 'Máximo de 100 caracteres').required('Campo Obrigatório'),
@@ -24,17 +26,22 @@ const Login = (props) => {
 
   const handleSubmitMethod = async (formValues, helperMethods) => {
     try {
-      console.log(formValues);
-      // await axios.post(
-      //   `${process.env.REACT_APP_API_BASE_URL}/auth/public/login`,
-      //   formValues,
-      // );
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/auth/public/login`,
+        formValues,
+      );
 
-      // redirectToLoggedArea();
+      // Guardou o token no localstorage
+      localStorageUtils.set(data);
+
+      props.changeUserAuthStatus(true);
+
+      redirectToLoggedArea();
     } catch (error) {
-      // if (error.response.data && error.response.data.type === 'Auth-Signup') {
-      //   helperMethods.setFieldError('email', error.response.data.message);
-      // }
+      if (error.response.data && error.response.data.type === 'Auth-Login-Invalid-Credentials') {
+        helperMethods.setFieldError('email', error.response.data.message);
+        helperMethods.setFieldError('password', error.response.data.message);
+      }
     }
   }
 

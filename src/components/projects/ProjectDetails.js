@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 import EditProject from './EditProject';
 import AddTask from '../tasks/AddTask';
+
+import apiServices from '../../services/api.service';
 
 class ProjectDetails extends Component {
   state = {}
@@ -12,33 +13,32 @@ class ProjectDetails extends Component {
     this.getSingleProject();
   }
  
-  getSingleProject = () => {
-    const { params } = this.props.match;
-
-    axios.get(`${process.env.REACT_APP_API_BASE_URL}/projects/private/list/${params.id}`)
-    .then( responseFromApi =>{
-      const theProject = responseFromApi.data;
-      this.setState(theProject);
-    })
-    .catch((err)=>{
-        console.log(err)
-    })
+  getSingleProject = async () => {
+    try {
+      const { params } = this.props.match;
+  
+      const project = await apiServices.getOneProjectById(params.id);
+      
+      this.setState(project);
+    } catch (error) {
+      console.log(error)
+    }
   }
  
 // DELETE PROJECT:
-  deleteProject = () => {
-    const { params } = this.props.match;
-    axios.delete(`${process.env.REACT_APP_API_BASE_URL}/projects/private/delete/${params.id}`)
-    .then( () =>{
-        this.props.history.push('/projects'); // !!!         
-    })
-    .catch((err)=>{
-        console.log(err)
-    })
+  deleteProject = async () => {
+    try {
+      const { params } = this.props.match;
+      
+      await apiServices.deleteProjectById(params.id);
+
+      this.props.history.push('/projects');    
+    } catch (error) {
+      console.log(error);
+    }
   }
  
   render(){
-    console.log(this.state)
     return(
       <div>
         <h1>{this.state.title}</h1>

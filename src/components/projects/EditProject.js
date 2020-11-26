@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+
+import apiServices from '../../services/api.service';
  
 class EditProject extends Component {
   state = {
@@ -8,23 +9,24 @@ class EditProject extends Component {
     id: this.props.theProject._id,
   }
   
-  handleFormSubmit = (event) => {
-    const { title, description } = this.state;
-    // const title = this.state.title;
-    // const description = this.state.description;
-    console.log(this.props);
-    event.preventDefault();
- 
-    axios.put(`${process.env.REACT_APP_API_BASE_URL}/projects/private/update/${this.state.id}`, { title, description })
-    .then( () => {
-        // after submitting the form, redirect to '/projects'
-        this.props.history.push('/projects');
-    })
-    .catch( error => console.log(error) )
+  handleFormSubmit = async (event) => {
+    try {
+      event.preventDefault();
+
+      const { title, description, id } = this.state;
+  
+      await apiServices.editProjectById(id, { title, description });
+
+      this.props.history.push('/projects');
+      
+    } catch (error) {
+      console.log(error);
+    }
   }
  
   handleChange = (event) => {  
     const {name, value} = event.target;
+
     this.setState({[name]: value});
   }
  
